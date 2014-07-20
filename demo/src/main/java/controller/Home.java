@@ -15,10 +15,6 @@ public class Home {
 	public void addReminder(@RequestBody Reminder reminder) {
 		System.out.println(reminder.getTimezone());
 		System.out.println(reminder.getMessage());
-	}
-	
-	@RequestMapping(value="/add", method=RequestMethod.POST)
-	public void a() {
-		System.out.println("OK");
+		System.out.println(reminder.getProvider());
 	}
 }
