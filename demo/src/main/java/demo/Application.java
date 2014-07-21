@@ -5,8 +5,11 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import controller.Home;
+import dao.ReminderDAO;
+
 @Configuration
-@ComponentScan(basePackages = "controller")
+@ComponentScan(basePackageClasses={Home.class, ReminderDAO.class})
 @EnableAutoConfiguration
 public class Application {
 
