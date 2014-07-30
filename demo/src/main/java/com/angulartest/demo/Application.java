@@ -1,16 +1,16 @@
-package demo;
+package com.angulartest.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import sender.SenderInit;
-import controller.Home;
-import dao.ReminderDAO;
+import com.angulartest.controller.Home;
+import com.angulartest.dao.ReminderDAO;
+import com.angulartest.sender.SenderInit;
 
 @Configuration
-@ComponentScan(basePackageClasses={Home.class, ReminderDAO.class})
+@ComponentScan("com.angulartest")
 @EnableAutoConfiguration
 public class Application {
 

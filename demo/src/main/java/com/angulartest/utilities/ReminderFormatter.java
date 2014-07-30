@@ -1,4 +1,4 @@
-package utilities;
+package com.angulartest.utilities;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -10,9 +10,21 @@ var baseUrl = 'http://localhost:8090/';
 var myAppModule = angular.module('myApp', []);
 
 myAppModule.controller('Home', function($scope, $http) {	
-	$scope.providers = ["Select provider", "Verizon", "AT&T", "Sprint", "T-Mobile"];
+	var init = function() {		
+		$http.get(baseUrl+"/getProviders")
+		.success(function(data) {
+			//populate providers drop down
+			$scope.providers = data;
+			
+			//set initial value of providers dropdown
+			$scope.reminder = {};
+			$scope.reminder.provider = data[0];
+		});
+	}
 	
-	$scope.submit = function() {
+	init();
+	
+	$scope.addReminder = function() {
 		$scope.reminder.timezone = jstz.determine().name();
 		
 		$http({

@@ -1,13 +1,12 @@
-package utilities;
+package com.angulartest.utilities;
 
 import java.util.List;
 
-import model.ReminderFO;
+import com.angulartest.model.ReminderFO;
 
 public class ReminderTimeFormatter extends ReminderFormatter {
-	public String getTimeFromUserDateTime(ReminderFO reminderFO) {
+	public String getTimeFromUserDateTime(String dateTime) {
 		//assumes format MM/DD/YYYY 00:00:00AM
-		String dateTime = reminderFO.getDateTime();
 		String time = "";
 		if (dateTime.contains(" ")) { 
 			String tokens[] = dateTime.split(" ");

@@ -1,7 +1,7 @@
-package model;
+package com.angulartest.model;
 
-import utilities.ReminderDateFormatter;
-import utilities.ReminderTimeFormatter;
+import com.angulartest.utilities.ReminderDateFormatter;
+import com.angulartest.utilities.ReminderTimeFormatter;
 
 public class ReminderFO {
 	private String mobileNumber;
@@ -9,9 +9,6 @@ public class ReminderFO {
 	private String dateTime;
 	private String timezone;
 	private String message;
-	
-	public ReminderFO() {
-	}
 
 	public String getMobileNumber() {
 		return mobileNumber;
@@ -55,13 +52,13 @@ public class ReminderFO {
 	
 	public Reminder convertReminderFOToReminder() {
 		ReminderDateFormatter reminderDateFormatter = new ReminderDateFormatter();
-		String formattedDate = reminderDateFormatter.getDateFromUserInput(this);
+		String formattedDate = reminderDateFormatter.getDateFromUserInput(dateTime, timezone);
 		
 		Reminder reminder = new Reminder();
 		reminder.setDate(formattedDate);
 		
 		ReminderTimeFormatter reminderTimeFormatter = new ReminderTimeFormatter();
-		String formattedTime = reminderTimeFormatter.getTimeFromUserDateTime(this);
+		String formattedTime = reminderTimeFormatter.getTimeFromUserDateTime(dateTime);
 		
 		reminder.setTime(formattedTime);
 		reminder.setTimezone(getTimezone());

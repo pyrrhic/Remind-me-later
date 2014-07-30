@@ -1,7 +1,7 @@
-package dao;
+package com.angulartest.dao;
 
 public class HelperDAO {
-	private static String schemaName = "test";
+	private static final String schemaName = "test";
 	
 	public static String getSchemaName() {
 		return schemaName;

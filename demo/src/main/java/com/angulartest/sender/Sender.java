@@ -1,31 +1,31 @@
-package sender;
+package com.angulartest.sender;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
 import javax.servlet.ServletContext;
 
-import model.Reminder;
-
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import utilities.MonthTable;
-import dao.ReminderDAO;
+import com.angulartest.dao.MonthTable;
+import com.angulartest.dao.Providers;
+import com.angulartest.dao.ReminderDAO;
+import com.angulartest.model.Reminder;
 
 public class Sender implements Runnable
-{		
-	private HashMap<String,String> emails;
+{	
+	private Providers providers;	
+	
 	private boolean isRunning;
 	private ServletContext context;
 	
-	public Sender(ServletContext context) {
-		initEmailMap();
+	public Sender(ServletContext context, Providers providers) {
 		this.context = context;
+		this.providers = providers;
 	}   
 	
 	public void run()
@@ -82,7 +82,7 @@ public class Sender implements Runnable
 
 			for(Reminder msgObj: messages) {					
 				String provider = msgObj.getProvider();
-				String email = getEmailForProvider(provider);
+				String email = providers.getEmailForProvider(provider);
 				String sendAddr = msgObj.getCellNumber() + email;
 				String msg = msgObj.getMessage();
 				
@@ -124,18 +124,5 @@ public class Sender implements Runnable
 		timeFormat.setCalendar(cal);
 		String time = timeFormat.format(cal.getTime());
 		return time;
-	}
-	
-	private void initEmailMap() {		
-		emails = new HashMap<String, String>();
-		emails.put("Verizon", "@vtext.com");
-		emails.put("AT&T", "@txt.att.net");
-		emails.put("Sprint", "@messaging.sprintpcs.com");
-		emails.put("T-Mobile", "@tmomail.net");
-		emails.put("Boost Mobile", "@myboostmobile.com");
-	}
-	
-	private String getEmailForProvider(String provider) {
-		return emails.get(provider);
 	}
 }

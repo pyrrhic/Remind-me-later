@@ -1,4 +1,4 @@
-package model;
+package com.angulartest.model;
 
 public class Reminder {
 	private int id;
@@ -12,9 +12,6 @@ public class Reminder {
 	
 	private String time;
 	private String timezone;
-
-	public Reminder() {
-	}
 	
 	/**
 	 * Non-basic getters and setters

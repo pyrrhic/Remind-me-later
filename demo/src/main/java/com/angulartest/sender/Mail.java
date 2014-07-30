@@ -1,4 +1,4 @@
-package sender;
+package com.angulartest.sender;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import dao.NoSendListDAO;
+import com.angulartest.dao.NoSendListDAO;
 
 public class Mail {
 	private NoSendListDAO noSendListDAO;

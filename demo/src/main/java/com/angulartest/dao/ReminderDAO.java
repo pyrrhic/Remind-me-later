@@ -1,4 +1,4 @@
-package dao;
+package com.angulartest.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,15 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import model.Reminder;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import utilities.MonthTable;
-import utilities.Utils;
+import com.angulartest.model.Reminder;
+import com.angulartest.utilities.Utils;
 
 @Repository
 public class ReminderDAO {

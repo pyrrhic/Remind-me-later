@@ -1,4 +1,4 @@
-package dao;
+package com.angulartest.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

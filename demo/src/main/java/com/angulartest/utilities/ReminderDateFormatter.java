@@ -1,4 +1,4 @@
-package utilities;
+package com.angulartest.utilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,20 +8,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
-import model.ReminderFO;
+import com.angulartest.model.ReminderFO;
 	
 public class ReminderDateFormatter extends ReminderFormatter {
-	public String getDateFromUserInput(ReminderFO reminderFO) {
+	public String getDateFromUserInput(String dateTime, String timezone) {
 		List<String> slashMatches = new LinkedList<String>();
 		List<String> weekMatches = new LinkedList<String>();
 		List<String> soonMatches = new LinkedList<String>();
 		
-		String userDateTime = reminderFO.getDateTime();
-		slashMatches = getSlashFormatMatches(userDateTime);
+		slashMatches = getSlashFormatMatches(dateTime);
 		if (slashMatches.size() == 0) {
-			weekMatches = getWeekFormatMatches(userDateTime);
+			weekMatches = getWeekFormatMatches(dateTime);
 			if (weekMatches.size() == 0) {
-				soonMatches = getSoonFormatMatches(userDateTime);
+				soonMatches = getSoonFormatMatches(dateTime);
 			}
 		}
 		
@@ -39,7 +38,7 @@ public class ReminderDateFormatter extends ReminderFormatter {
 				break;
 				
 			case WEEK:
-				returnDate = getDateFromWeek(reminderFO.getTimezone(), weekMatches.get(0));
+				returnDate = getDateFromWeek(timezone, weekMatches.get(0));
 				break;
 				
 			case SOON:

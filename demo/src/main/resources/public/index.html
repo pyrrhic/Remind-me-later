@@ -13,10 +13,10 @@
 		<div id="content" ng-controller="Home">
 			<form novalidate role="form">
 				<input data-ng-model="reminder.mobileNumber" type="text" placeholder="cell number">
-				<select data-ng-model="reminder.provider" ng-init="reminder.provider = providers[0]" data-ng-options="p for p in providers"></select>
+				<select data-ng-model="reminder.provider" data-ng-options="p for p in providers"></select>
 				<input data-ng-model="reminder.dateTime" type="text" placeholder="date and time">
 				<input data-ng-model="reminder.message" type="text" placeholder="message">
-				<input data-ng-click="submit()" type="button" value="Submit">	
+				<input data-ng-click="addReminder()" type="button" value="Submit">	
 			</form>
 		</div>
 	</body>
