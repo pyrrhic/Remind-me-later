@@ -9,22 +9,24 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.angulartest.utilities.MyConstants;
+
 @Repository
 public class NoSendListDAO {
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
 	public void addToNoSendList(String contact) {
-		String sql = "INSERT INTO " + HelperDAO.getSchemaName() + ".nosendlist " +
+		String sql = "INSERT INTO " +  MyConstants.SCHEMA_NAME + ".nosendlist " +
 					 "(contact) " +
 				     "VALUES(?)";
 		
 		jdbcTemplate.update(sql, new Object[] { 
 			      contact });
 	}
-	
+		
 	public boolean isContactOnNoSendList(String contact) {
-		String sql = "SELECT contact FROM " + HelperDAO.getSchemaName() + ".nosendlist " +
+		String sql = "SELECT contact FROM " + MyConstants.SCHEMA_NAME + ".nosendlist " +
 				     "WHERE contact = ?"; 
 		
 		List<String> c = jdbcTemplate.query(sql, new Object[] { contact }, new RowMapper<String>() {

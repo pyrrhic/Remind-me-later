@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.angulartest.model.Reminder;
+import com.angulartest.utilities.MyConstants;
 import com.angulartest.utilities.Utils;
 
 @Repository
@@ -26,10 +27,10 @@ private int sendLimit = 1000;
 	
 	public int getSendLimit() {
 		return sendLimit;
-	}
+	}	
 	
 	public List<Reminder> getRemindersToSend(String monthTable, String scheduledDate) {
-		String getMessagesSql = "SELECT * FROM " + HelperDAO.getSchemaName() + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + sendLimit;
+		String getMessagesSql = "SELECT * FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + sendLimit;
 
 	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 	    Date insertDate = null;
@@ -64,7 +65,7 @@ private int sendLimit = 1000;
 		int month = Integer.parseInt(monthString);
 		String monthTable = MonthTable.getMonthTableName(month);
 		
-		String sql = "UPDATE " + HelperDAO.getSchemaName() + "." + monthTable + " SET \"wasSent\"=? WHERE " + " reminderid=?";
+		String sql = "UPDATE " +  MyConstants.SCHEMA_NAME + "." + monthTable + " SET \"wasSent\"=? WHERE " + " reminderid=?";
 		
 		int id = r.getId();
 		
@@ -75,7 +76,7 @@ private int sendLimit = 1000;
 	}
 	
 	public List<Reminder> getRemindersToView(String monthTable, int year, String username, String offset, String limit, boolean getUnsentOnly) {
-		String getMessagesSql = "SELECT * FROM " + HelperDAO.getSchemaName() + "." + monthTable
+		String getMessagesSql = "SELECT * FROM " +  MyConstants.SCHEMA_NAME + "." + monthTable
 				+ " WHERE username = ? AND \"wasSent\" = ? AND date_part('year', scheduleddate) = ? ORDER BY scheduleddate LIMIT " + limit + " OFFSET " + offset;
 		
 		List<Reminder> reminders = jdbcTemplate.query(getMessagesSql, new Object[] { username, false, year }, new RowMapper<Reminder>() {
@@ -151,7 +152,7 @@ private int sendLimit = 1000;
 		int month = Integer.parseInt(reminder.getMonth());
 		String monthTable = MonthTable.getMonthTableName(month);
 
-		String sql = "INSERT INTO " + HelperDAO.getSchemaName() + "." + monthTable
+		String sql = "INSERT INTO " +  MyConstants.SCHEMA_NAME + "." + monthTable
 				+ " (USERNAME, SCHEDULEDDATE, NAME, MESSAGE, CONTACTS, PROVIDER, TIMEZONE, \"wasSent\") VALUES (?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { username, insertDate, name, message, contact, provider, timezone, false });

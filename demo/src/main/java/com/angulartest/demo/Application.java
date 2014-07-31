@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.angulartest.controller.Home;
-import com.angulartest.dao.ReminderDAO;
 import com.angulartest.sender.SenderInit;
 
 @Configuration

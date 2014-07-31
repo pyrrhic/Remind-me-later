@@ -71,13 +71,13 @@ public class ReminderTimeFormatter extends ReminderFormatter {
 	}
 
 	private List<String> getShortTimeMatches(String dateTime) {
-		String regexPattern = "([1]{1}[0-2]{1}|[1-9]{1})(AM|PM){1}";
+		String regexPattern = "([1]{1}[0-2]{1}|[1-9]{1})(AM|PM|am|pm){1}";
 
 		return getMatches(regexPattern, dateTime);
 	}
 
 	private List<String> getLongTimeMatches(String dateTime) {
-		String regexPattern = "([1]{1}[0-2]{1}|[1-9]{1})(:){1}[0-5][0-9](AM|PM){1}";
+		String regexPattern = "([1]{1}[0-2]{1}|[1-9]{1})(:){1}[0-5][0-9](AM|PM|am|pm){1}";
 
 		return getMatches(regexPattern, dateTime);
 	}
