@@ -37,7 +37,7 @@ public class Mail {
 		try {
 			Session session = Session.getDefaultInstance(props);
 			Store store = session.getStore("imaps");
-			store.connect("imap.gmail.com", "remindothers@gmail.com", "kyp12KYP");
+			store.connect("imap.gmail.com", "remindothers@gmail.com", "");
 			System.out.println(store);
 
 			Folder inbox = store.getFolder("Inbox");
