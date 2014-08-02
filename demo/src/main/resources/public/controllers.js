@@ -9,7 +9,7 @@ myAppModule.controller('Home', function($scope, $http, $timeout) {
 			$scope.providers = data;
 			
 			//init regex
-			var soonDate = "(now|today|tomorrow)";
+			var soonDate = "(today|tomorrow)";
 			var slashDate = "([0-9]{1,2}/{1}[0-9]{1,2}/{1}([0-9]{4}|[0-9]{2}))";
 			var weekdayDate = "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)";
 			
@@ -24,15 +24,14 @@ myAppModule.controller('Home', function($scope, $http, $timeout) {
 	init();
 	
 	$scope.addReminder = function() {
-		//'submitted' used to trigger the display of error messages on ui
-		$scope.addReminderForm.submitted = true;
-		
-		$timeout(function() {
-			$scope.addReminderForm.submitted = false;
-		},
-		1000);
-		
 		if ($scope.addReminderForm.$invalid) {
+			$scope.addReminderForm.showErrors = true;
+			
+			$timeout(function() {
+				$scope.addReminderForm.showErrors = false;
+				},
+				5000);
+			
 			return;
 		}
 		
@@ -48,20 +47,20 @@ myAppModule.controller('Home', function($scope, $http, $timeout) {
 		})
 		.success(function(errors) {		
 			if (errors.length === 0) {
-				$scope.reminder = {};
-				//$scope.addReminderForm.$setPristine();				
-				
 				//show a message that notifies the user of the successful reminder creation
 				$scope.reminderAdded = true;
+				
 				
 				//remove the message that notifies the user of successful reminder creation after x seconds
 				$timeout(function() {
 							$scope.reminderAdded = false;
+							$scope.reminder = {};
 						},
-						5000);
+						2000);
 			}
-			
-			//user is doing something really weird if he got past the ui side validation.
+			else {
+				//user is doing something really weird if he got past the ui side validation. not sure if i should do anything?	
+			}
 		});
 	};
 })

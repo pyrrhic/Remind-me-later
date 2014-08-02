@@ -59,7 +59,7 @@ public class ReminderDateFormatter extends ReminderFormatter {
 	}
 	
 	private List<String> getSoonFormatMatches(String dateTime) {
-		String regexPattern = "now|today|tomorrow";
+		String regexPattern = "today|tomorrow";
 		return getMatches(regexPattern, dateTime);
 	}
 	

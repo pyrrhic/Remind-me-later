@@ -23,20 +23,10 @@
 	</div>
 
 	<div ng-controller="Home" class="well bs-component" style="width: 62em; margin: 0 auto;">
-		<div ng-show="reminderAdded" class="alert alert-dismissable alert-success">
-		  <button type="button" class="close" data-dismiss="alert">×</button>
-		  <strong>Reminder successfully created!</strong>
-		</div>
-		
-		<div ng-show="addReminderForm.$invalid && addReminderForm.submitted" class="alert alert-dismissable alert-danger">
-		  <button type="button" class="close" data-dismiss="alert">×</button>
-		  <strong>Please refer to the examples for correctly creating a reminder.</strong>
-		</div>
-	
 		<form novalidate role="form" name="addReminderForm" class="form-inline"> <!-- http://scotch.io/tutorials/javascript/angularjs-form-validation --- http://code.realcrowd.com/on-the-bleeding-edge-advanced-angularjs-form-validation/ -->
 			<fieldset>
 				<h3 style="margin-top:0px;">Create SMS Reminder</h3>
-				<div ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.submitted}" class="form-group">
+				<div ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}" class="form-group">
 					<div>
 						<input data-ng-model="reminder.mobileNumber" 
 								required
@@ -45,7 +35,7 @@
 						        name="mobileNumber" type="text" class="form-control" placeholder="cell number">
 					</div>
 				</div>
-				<div class="form-group" ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.submitted}">
+				<div class="form-group" ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}">
 					<div>
 						<input data-ng-model="reminder.message"
 								required
@@ -54,7 +44,7 @@
 						        name="message" type="text" class="form-control" placeholder="message">
 					</div>
 				</div>
-				<div class="form-group" ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.submitted}">
+				<div class="form-group" ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}">
 					<div>
 						<select data-ng-model="reminder.provider" 
 						        data-ng-options="p for p in providers"
@@ -64,7 +54,7 @@
 						        </select> 
 					</div>
 				</div>
-				<div class="form-group" ng-class="{'has-error': (addReminderForm.dateTime.$invalid || addReminderForm.dateTime.$required.pattern) && addReminderForm.submitted}">
+				<div class="form-group" ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}">
 					<div>
 						<input data-ng-model="reminder.dateTime"
 								required
@@ -79,6 +69,14 @@
 				</div>
 			</fieldset>
 		</form>
+		
+		<div ng-show="reminderAdded" class="alert alert-dismissable alert-success" style="margin-top:10px; width:80%;">
+		  	<strong>Reminder successfully created!</strong>
+		</div>
+		
+		<div ng-show="addReminderForm.$invalid && addReminderForm.showErrors" class="alert alert-dismissable alert-danger" style="margin-top:10px; width:80%;">
+		  	<strong>Please refer to the examples for correctly creating a reminder.</strong>
+		</div>
 	</div>
 </body>
 </html>
