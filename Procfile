@@ -1,2 +1,2 @@
-web: java -jar target/*.jar
+web: java -jar
 worker: sh target/bin/worker
