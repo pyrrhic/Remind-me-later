@@ -25,6 +25,9 @@ import com.angulartest.dao.NoSendListDAO;
 public class Mail {
 	private NoSendListDAO noSendListDAO;
 	
+	private static String EMAIL = System.getenv("EMAIL");
+	private static String EMAIL_PASSWORD = System.getenv("EMAIL_PASSWORD");
+	
 	public Mail(ServletContext context) {
 		WebApplicationContext servletContext =  WebApplicationContextUtils.getWebApplicationContext(context);	
 		this.noSendListDAO = (NoSendListDAO) servletContext.getBean("noSendListDAO");
@@ -37,7 +40,7 @@ public class Mail {
 		try {
 			Session session = Session.getDefaultInstance(props);
 			Store store = session.getStore("imaps");
-			store.connect("imap.gmail.com", "remindothers@gmail.com", "kyp12KYP");
+			store.connect("imap.gmail.com", EMAIL, EMAIL_PASSWORD);
 			System.out.println(store);
 
 			Folder inbox = store.getFolder("Inbox");
