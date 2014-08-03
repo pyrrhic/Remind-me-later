@@ -1,2 +1,2 @@
 var myAppModule = angular.module('myApp', []);
-myAppModule.baseUrl = 'http://localhost:8090/';
+myAppModule.baseUrl = 'http://remindothers.herokuapp.com/';
