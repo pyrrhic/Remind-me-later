@@ -85,8 +85,6 @@ public class Mail {
 		
 	    final String SMTP_HOST_NAME = "smtp.gmail.com";
 	    final int SMTP_HOST_PORT = 465;
-	    final String SMTP_AUTH_USER = "remindothers@gmail.com";
-	    final String SMTP_AUTH_PWD  = "kyp12KYP";
 	    
 	    Properties props = new Properties();
 
@@ -111,7 +109,7 @@ public class Mail {
 
 	        message.addRecipient(Message.RecipientType.TO, new InternetAddress(sendAddr));
 	        
-	        transport.connect(SMTP_HOST_NAME, SMTP_HOST_PORT, SMTP_AUTH_USER, SMTP_AUTH_PWD);
+	        transport.connect(SMTP_HOST_NAME, SMTP_HOST_PORT, EMAIL, EMAIL_PASSWORD);
 
 	        transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
 	        transport.close();

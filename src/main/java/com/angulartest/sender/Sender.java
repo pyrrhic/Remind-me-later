@@ -30,7 +30,6 @@ public class Sender implements Runnable
 	
 	public void run()
 	{
-		System.out.println("SENDER STARTED");
 		//some process to fire off emails that were somehow missed?
 		
 		// figure out what day and time it is.

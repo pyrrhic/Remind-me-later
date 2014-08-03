@@ -26,45 +26,76 @@
 		<form novalidate role="form" name="addReminderForm" class="form-inline"> <!-- http://scotch.io/tutorials/javascript/angularjs-form-validation --- http://code.realcrowd.com/on-the-bleeding-edge-advanced-angularjs-form-validation/ -->
 			<fieldset>
 				<h3 style="margin-top:0px;">Create SMS Reminder</h3>
-				<div ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}" class="form-group">
-					<div>
+				<div class="form-group">
+					<div ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}">
 						<input data-ng-model="reminder.mobileNumber" 
 								required
 						        ng-minlength="10"
 						        ng-maxlength="13" 
 						        name="mobileNumber" type="text" class="form-control" placeholder="cell number">
 					</div>
-				</div>
-				<div class="form-group" ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}">
+					<br />
 					<div>
+						<strong>Examples</strong>
+						<ul>
+							<li>1234567890</li>
+							<li>123-456-7890</li>
+							<li>(123) 456-7890</li>
+						</ul> 
+					</div>
+				</div>
+				<div class="form-group">
+					<div ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}">
 						<input data-ng-model="reminder.message"
 								required
 								ng-minlength="1"
 						        ng-maxlength="140" 
 						        name="message" type="text" class="form-control" placeholder="message">
 					</div>
-				</div>
-				<div class="form-group" ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}">
+					<br />
 					<div>
+						<strong>Examples</strong>
+						<ul>
+							<li>bar after work</li>
+							<li>paper is due tomorrow!</li>
+							<li>date tonight</li>
+						</ul> 
+					</div>
+				</div>
+				<div class="form-group">
+					<div ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}">
 						<select data-ng-model="reminder.provider" 
 						        data-ng-options="p for p in providers"
 						        required 
 						        name="provider" class="form-control">
 					        		<option value="">Select provider</option> 
-						        </select> 
+				        </select>
+					</div>
+					<div style="height:115px;">
 					</div>
 				</div>
-				<div class="form-group" ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}">
-					<div>
+				<div class="form-group">
+					<div ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}">
 						<input data-ng-model="reminder.dateTime"
 								required
 								data-ng-pattern="addReminderForm.dateTimeRegex"
 						        name="dateTime" type="text" class="form-control" placeholder="date and time">
 					</div>
+					<br />
+					<div>
+						<strong>Examples</strong>
+						<ul>
+							<li>today 5pm</li>
+							<li>thursday 10:45am</li>
+							<li>10/23/14 3:15pm</li>
+						</ul> 
+					</div>
 				</div>			
 				<div class="form-group">
 					<div class="col-lg-10 text-center">
 						<button data-ng-click="addReminder()" type="submit" class="btn btn-info">Submit</button>
+					</div>
+					<div style="height:159px;">
 					</div>
 				</div>
 			</fieldset>
