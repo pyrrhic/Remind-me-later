@@ -1,8 +1,7 @@
 package com.angulartest.utilities;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.angulartest.model.ReminderFO;
 
 public class ReminderTimeFormatter extends ReminderFormatter {
 	public String getTimeFromUserDateTime(String dateTime) {
@@ -17,10 +16,15 @@ public class ReminderTimeFormatter extends ReminderFormatter {
 		
 		if (time == "") return "";
 		
-		List<String> shortMatches = getShortTimeMatches(dateTime);
+		List<String> shortMatches = new ArrayList<String>();
 		List<String> longMatches = getLongTimeMatches(dateTime);
-
-		if ((shortMatches.size() + longMatches.size()) == 0) return "";
+		
+		if (longMatches.size() == 0) {
+			shortMatches = getShortTimeMatches(dateTime);
+			if (shortMatches.size() == 0) {
+				return "";
+			}
+		}
 		
 		TimeFormatType timeFormat = getTimeFormatType(shortMatches, longMatches, dateTime);
 

@@ -23,14 +23,14 @@ public class ReminderDAO {
 	@Autowired
     private JdbcTemplate jdbcTemplate;	
 	
-private int sendLimit = 1000;
+	private final int SEND_LIMIT = 1000;
 	
 	public int getSendLimit() {
-		return sendLimit;
+		return SEND_LIMIT;
 	}	
 	
 	public List<Reminder> getRemindersToSend(String monthTable, String scheduledDate) {
-		String getMessagesSql = "SELECT * FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + sendLimit;
+		String getMessagesSql = "SELECT * FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + SEND_LIMIT;
 
 	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 	    Date insertDate = null;

@@ -32,12 +32,6 @@ public class Sender implements Runnable
 	{
 		//some process to fire off emails that were somehow missed?
 		
-		// figure out what day and time it is.
-		// query database for next upcoming time increment
-		// wait until it's time
-		// fire off the emails
-		// mark emails that were pulled with some sort of flag as 'sent'
-		
 		// only pull 1000 emails at a time? so i dont run out of memory.
 		isRunning = true;
 		while(isRunning) {
@@ -53,7 +47,7 @@ public class Sender implements Runnable
 			time = time.substring(0, 6) + "00";
 			
 			Mail mail = new Mail(context);			
-			//mail.updateNoSendList();
+			//mail.updateNoSendList(); reading mails is taking a very long time - javamail is doing a lazy load even though i set it to load in batches.
 			
 			//send
 			int month = Integer.parseInt(date.substring(5, 7));
