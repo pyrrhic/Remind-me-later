@@ -3,7 +3,7 @@
 
 myAppModule.controller('Home', function($scope, $http, $timeout) {	
 	var init = function() {		
-		$http.get(myAppModule.baseUrl+"/getProviders")
+		$http.get(myAppModule.baseUrl+"getProviders")
 		.success(function(data) {
 			//populate providers drop down
 			$scope.providers = data;
