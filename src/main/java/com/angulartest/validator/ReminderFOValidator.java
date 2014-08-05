@@ -62,7 +62,7 @@ public class ReminderFOValidator implements Validator {
 		boolean isValid = !isBlankOrEmpty(mobileNumber);
 		
 		if (isValid) {
-			mobileNumber.replaceAll("\\D", "");
+			mobileNumber = mobileNumber.replaceAll("[^0-9]", "");
 			isValid = (mobileNumber.length() == 10);
 		}
 		
