@@ -37,29 +37,34 @@
 					<tbody>
 						<tr>
 							<td>
-								<div ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}">
-									<input data-ng-model="reminder.mobileNumber" required ng-minlength="10" ng-maxlength="13" name="mobileNumber" type="text"
-										class="form-control" placeholder="cell number">
-								</div>
+								<input ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}" 
+								       data-ng-model="reminder.mobileNumber" 
+								       required ng-minlength="10" ng-maxlength="13" 
+								       name="mobileNumber" type="text"
+									   class="form-control" placeholder="cell number">
 							</td>
 							<td>
-								<div ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}">
-									<input data-ng-model="reminder.message" required ng-minlength="1" ng-maxlength="140" name="message" type="text"
-										class="form-control" placeholder="message">
-								</div>
+								<input ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}" 
+								       data-ng-model="reminder.message" 
+								       required ng-minlength="1" ng-maxlength="140" 
+								       name="message" type="text"
+									   class="form-control" placeholder="message">
 							</td>
 							<td>
-								<div ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}">
-									<select data-ng-model="reminder.provider" data-ng-options="p for p in providers" required name="provider" class="form-control">
-										<option value="">Select provider</option>
-									</select>
-								</div>
+								<select ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}" 
+								        data-ng-model="reminder.provider" 
+								        data-ng-options="p for p in providers" 
+								        required 
+								        name="provider" class="form-control">
+									<option value="">Select provider</option>
+								</select>
 							</td>
 							<td>
-								<div ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}">
-									<input data-ng-model="reminder.dateTime" required data-ng-pattern="addReminderForm.dateTimeRegex" name="dateTime" type="text"
-										class="form-control" placeholder="date and time">
-								</div>
+								<input ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}"
+								       data-ng-model="reminder.dateTime" 
+								       required data-ng-pattern="addReminderForm.dateTimeRegex" 
+								       name="dateTime" type="text"
+									class="form-control" placeholder="date and time">
 							</td>
 							<td>
 								<div class="col-lg-10 text-center">
