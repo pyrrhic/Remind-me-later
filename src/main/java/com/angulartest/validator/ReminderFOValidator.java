@@ -23,6 +23,9 @@ public class ReminderFOValidator implements Validator {
 	public void validate(Object obj, Errors errors) {
 		ReminderFO reminderFO = (ReminderFO)obj;
 		
+		String cleanedMobileNumber = cleanMobileNumber(reminderFO.getMobileNumber());
+		reminderFO.setMobileNumber(cleanedMobileNumber);
+		
 		if (!isMobileNumberValid(reminderFO.getMobileNumber())) {
 			errors.rejectValue("mobileNumber", "", GENERIC_ERROR_MESSAGE);
 		}
@@ -58,11 +61,14 @@ public class ReminderFOValidator implements Validator {
 		return !(isBlankOrEmpty(message) || message.length() > MAX_MESSAGE_LENGTH);
 	}
 
+	private String cleanMobileNumber(String mobileNumber) {
+		return mobileNumber.replaceAll("[^0-9]", "");
+	}
+	
 	private boolean isMobileNumberValid(String mobileNumber) {		
 		boolean isValid = !isBlankOrEmpty(mobileNumber);
 		
 		if (isValid) {
-			mobileNumber = mobileNumber.replaceAll("[^0-9]", "");
 			isValid = (mobileNumber.length() == 10);
 		}
 		
