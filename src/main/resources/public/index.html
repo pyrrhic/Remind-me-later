@@ -23,95 +23,81 @@
 </head>
 
 <body style="height: 100%;">
-	<div class="navbar navbar-default">
-		<div class="navbar-header">
-			<span class="navbar-brand">RemindOthers</span>
-		</div>
-	</div>
+	<div class="container">
+		<div class="row">
+			<section role="main">
+				<div class="navbar navbar-default">
+					<div class="navbar-header">
+						<span class="navbar-brand">RemindOthers</span>
+					</div>
+				</div>
 
-	<div ng-controller="Home" class="well bs-component" style="width: 64.3em; margin: 0 auto;">
-		<form novalidate role="form" name="addReminderForm" class="form-inline">
-			<fieldset>
-				<h3 style="margin-top: 0px;">Create SMS Reminder</h3>
-				<table class="table">
-					<tbody>
-						<tr>
-							<td>
-								<input ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}" 
-								       data-ng-model="reminder.mobileNumber" 
-								       required ng-minlength="10" ng-maxlength="13" 
-								       name="mobileNumber" type="text"
-									   class="form-control" placeholder="cell number">
-							</td>
-							<td>
-								<input ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}" 
-								       data-ng-model="reminder.message" 
-								       required ng-minlength="1" ng-maxlength="140" 
-								       name="message" type="text"
-									   class="form-control" placeholder="message">
-							</td>
-							<td>
-								<select ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}" 
-								        data-ng-model="reminder.provider" 
-								        data-ng-options="p for p in providers" 
-								        required 
-								        name="provider" class="form-control">
-									<option value="">Select provider</option>
-								</select>
-							</td>
-							<td>
-								<input ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}"
-								       data-ng-model="reminder.dateTime" 
-								       required data-ng-pattern="addReminderForm.dateTimeRegex" 
-								       name="dateTime" type="text"
-									class="form-control" placeholder="date and time">
-							</td>
-							<td>
-								<div class="col-lg-10 text-center">
-									<button data-ng-click="addReminder()" type="submit" class="btn btn-info">Submit</button>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td><strong>Examples</strong>
-								<ul>
-									<li>1234567890</li>
-									<li>123-456-7890</li>
-									<li>(123) 456-7890</li>
-								</ul></td>
-							<td>
-								<ul>
-									<strong>Examples</strong>
-									<li>bar after work</li>
-									<li>paper is due tomorrow!</li>
-									<li>date tonight</li>
-								</ul>
-							</td>
-							<td>
-							
-							</td>
-							<td>
-								<strong>Examples</strong>
-								<ul>
-									<li>today 5pm</li>
-									<li>thursday 10:45am</li>
-									<li>10/23/14 3:15pm</li>
-								</ul>						
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<div ng-controller="Home" class="well bs-component">
+					<form novalidate role="form" name="addReminderForm">
+						<fieldset>
+							<h3 style="margin-top: 0px;">Create SMS Reminder</h3>
+							<div class="table-responsive">
+								<table class="table">
+									<tbody>
+										<tr>
+											<td><input ng-class="{'has-error': addReminderForm.mobileNumber.$invalid && addReminderForm.showErrors}"
+												data-ng-model="reminder.mobileNumber" required ng-minlength="10" ng-maxlength="13" name="mobileNumber" type="text"
+												class="form-control" placeholder="cell number"></td>
+											<td><input ng-class="{'has-error': addReminderForm.message.$invalid && addReminderForm.showErrors}"
+												data-ng-model="reminder.message" required ng-minlength="1" ng-maxlength="140" name="message" type="text" class="form-control"
+												placeholder="message"></td>
+											<td><select ng-class="{'has-error': addReminderForm.provider.$invalid && addReminderForm.showErrors}"
+												data-ng-model="reminder.provider" data-ng-options="p for p in providers" required name="provider" class="form-control">
+													<option value="">Select provider</option>
+											</select></td>
+											<td><input ng-class="{'has-error': addReminderForm.dateTime.$invalid && addReminderForm.showErrors}"
+												data-ng-model="reminder.dateTime" required data-ng-pattern="addReminderForm.dateTimeRegex" name="dateTime" type="text"
+												class="form-control" placeholder="date and time"></td>
+											<td>
+												<div class="text-center">
+													<button data-ng-click="addReminder()" type="submit" class="btn btn-info">Submit</button>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td><strong>Examples</strong>
+												<ul>
+													<li>1234567890</li>
+													<li>123-456-7890</li>
+													<li>(123) 456-7890</li>
+												</ul></td>
+											<td>
+												<ul>
+													<strong>Examples</strong>
+													<li>bar after work</li>
+													<li>paper is due tomorrow!</li>
+													<li>date tonight</li>
+												</ul>
+											</td>
+											<td></td>
+											<td><strong>Examples</strong>
+												<ul>
+													<li>today 5pm</li>
+													<li>thursday 10:45am</li>
+													<li>10/23/14 3:15pm</li>
+												</ul></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</fieldset>
+					</form>
 
-			</fieldset>
-		</form>
+					<div ng-show="reminderAdded" class="alert alert-dismissable alert-success" style="margin-top: 10px; width: 80%;">
+						<strong>Reminder successfully created!</strong>
+					</div>
 
-		<div ng-show="reminderAdded" class="alert alert-dismissable alert-success" style="margin-top: 10px; width: 80%;">
-			<strong>Reminder successfully created!</strong>
-		</div>
-
-		<div ng-show="addReminderForm.$invalid && addReminderForm.showErrors" class="alert alert-dismissable alert-danger"
-			style="margin-top: 10px; width: 80%;">
-			<strong>Please refer to the examples for correctly creating a reminder.</strong>
+					<div ng-show="addReminderForm.$invalid && addReminderForm.showErrors" class="alert alert-dismissable alert-danger"
+						style="margin-top: 10px; width: 80%;">
+						<strong>Please refer to the examples for correctly creating a reminder.</strong>
+					</div>
+				</div>
+			</section>
 		</div>
 	</div>
 </body>
