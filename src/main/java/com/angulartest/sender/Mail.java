@@ -1,9 +1,12 @@
 package com.angulartest.sender;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.FetchProfile;
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -15,44 +18,29 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.angulartest.dao.NoSendListDAO;
 
-public class Mail {
-	private NoSendListDAO noSendListDAO;
-	
+public class Mail {	
 	private static String EMAIL = System.getenv("EMAIL");
 	private static String EMAIL_PASSWORD = System.getenv("EMAIL_PASSWORD");
 	
-	public Mail(ServletContext context) {
-		WebApplicationContext servletContext =  WebApplicationContextUtils.getWebApplicationContext(context);	
-		this.noSendListDAO = (NoSendListDAO) servletContext.getBean("noSendListDAO");
+	public Mail() {
 	}
 	
-	public void updateNoSendList() {
-		Properties props = System.getProperties();
-		props.setProperty("mail.store.protocol", "imaps");
-
+	public List<String> updateNoSendList() {
+		List<String> addToNoSendList = null;
+		Store store = null;
 		try {
-			Session session = Session.getDefaultInstance(props);
-			Store store = session.getStore("imaps");
-			store.connect("imap.gmail.com", EMAIL, EMAIL_PASSWORD);
-			System.out.println(store);
-
-			Folder inbox = store.getFolder("Inbox");
+			store = connect();
 			
-			FetchProfile fetchProfile = new FetchProfile();
-			fetchProfile.add(FetchProfile.Item.CONTENT_INFO);
-			fetchProfile.add(FetchProfile.Item.FLAGS);
-			fetchProfile.add(FetchProfile.Item.ENVELOPE);
+			Folder inbox = getInbox(store);
 			
-			inbox.open(Folder.READ_ONLY);
-			Message messages[] = inbox.getMessages();
-			inbox.fetch(messages, fetchProfile);
+			FetchProfile fetchProfile = createFetchProfile();
+			
+			Message messages[] = getMessages(inbox, fetchProfile);
+			
+			addToNoSendList = new ArrayList<String>(messages.length);
 
 			for(Message message:messages) {
 				String fromAddr = message.getFrom()[0].toString();	
@@ -61,14 +49,20 @@ public class Mail {
 				String content = null;
 				try {
 					content = getText(message);
-				} catch (IOException e) {
+				} 
+				catch (IOException e) {
 					e.printStackTrace();
 				}
+				
 				content = content.toLowerCase();
-				if(content.contains("stop") && !(noSendListDAO.isContactOnNoSendList(contact))) {					
-					noSendListDAO.addToNoSendList(contact);
+				if(content.contains("stop")) {					
+					addToNoSendList.add(contact);			
 				}
+				
+				message.setFlag(Flags.Flag.DELETED, true);
 			}
+			
+			inbox.expunge();
 		} 
 		catch (NoSuchProviderException e) {
 			e.printStackTrace();
@@ -76,12 +70,78 @@ public class Mail {
 		catch (MessagingException e) {
 			e.printStackTrace();
 		}
+		finally {
+			if (store != null) {
+				disconnect(store);
+			}
+		}
+		
+		return (addToNoSendList == null) ? new ArrayList<String>(0) : addToNoSendList;
+	}
+	
+	private Store connect() {
+		Properties props = System.getProperties();
+		props.setProperty("mail.store.protocol", "imaps");
+		
+		Session session = Session.getDefaultInstance(props);
+		Store store = null;
+		try {
+			store = session.getStore("imaps");
+			store.connect("imap.gmail.com", EMAIL, EMAIL_PASSWORD);
+			//System.out.println(store);
+		} 
+		catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
+		return store;
+	}
+	
+	private Folder getInbox(Store store) {
+		Folder inbox = null;
+		try {
+			inbox = store.getFolder("Inbox");
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
+		return inbox;
+	}
+	
+	private Message[] getMessages(Folder inbox, FetchProfile fetchProfile) {
+		Message messages[] = {};
+		
+		try {
+			inbox.open(Folder.READ_WRITE);
+			messages = inbox.getMessages();
+			inbox.fetch(messages, fetchProfile);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
+		return messages;
+	}
+	
+	private FetchProfile createFetchProfile() {
+		FetchProfile fetchProfile = new FetchProfile();
+		fetchProfile.add(FetchProfile.Item.CONTENT_INFO);
+		fetchProfile.add(FetchProfile.Item.FLAGS);
+		fetchProfile.add(FetchProfile.Item.ENVELOPE);
+		
+		return fetchProfile;
+	}
+	
+	private void disconnect(Store store) {
+		try {
+			store.close();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void send(String txtMsg, String sendAddr) {
 		int delim = sendAddr.indexOf("@");
 		String cellNumber = sendAddr.substring(0, delim);		
-		noSendListDAO.isContactOnNoSendList(cellNumber);
 		
 	    final String SMTP_HOST_NAME = "smtp.gmail.com";
 	    final int SMTP_HOST_PORT = 465;

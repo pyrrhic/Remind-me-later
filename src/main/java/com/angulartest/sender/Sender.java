@@ -12,17 +12,20 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.angulartest.dao.MonthTable;
+import com.angulartest.dao.NoSendListDAO;
 import com.angulartest.dao.Providers;
 import com.angulartest.dao.ReminderDAO;
 import com.angulartest.model.Reminder;
+import com.angulartest.utilities.MyConstants;
 
-public class Sender implements Runnable
-{	
-	private Providers providers;	
+public class Sender implements Runnable {	
+	private final String appendedMessage = "\ntxt 'STOP' to end";
+	
+	private Providers providers;
+	private NoSendListDAO noSendListDAO;
 	
 	private boolean isRunning;
 	private ServletContext context;
-	
 	public Sender(ServletContext context, Providers providers) {
 		this.context = context;
 		this.providers = providers;
@@ -34,55 +37,70 @@ public class Sender implements Runnable
 		
 		// only pull 1000 emails at a time? so i dont run out of memory.
 		isRunning = true;
-		while(isRunning) {
-			System.out.println("Sender awake");
+		while(isRunning) {			
+			Mail mail = new Mail();	
+			updateNoSendList(mail);
+			
 			Calendar cal = new GregorianCalendar();
-			TimeZone tz = TimeZone.getTimeZone("America/New_York");
+			TimeZone tz = TimeZone.getTimeZone(MyConstants.SERVER_TIMEZONE);
 			cal.setTimeZone(tz);
 			
-			System.out.println(cal.getTime());
+			String date = getDate(cal);			
+			String monthTable = getMonthTable(date);
+			String dateTime = date + " " + getTime(cal).substring(0, 6) + "00";
 			
-			String date = getDate(cal);
-			String time = getTime(cal);
-			time = time.substring(0, 6) + "00";
-			
-			Mail mail = new Mail(context);			
-			//mail.updateNoSendList(); reading mails is taking a very long time - javamail is doing a lazy load even though i set it to load in batches.
-			
-			//send
-			int month = Integer.parseInt(date.substring(5, 7));
-			String monthTable = MonthTable.getMonthTableName(month);
-			String dateTime = date + " " + time;
-			System.out.println("getting messages for sending - " + dateTime);
+			//System.out.println("getting messages for sending - " + dateTime);
 			send(monthTable, dateTime, mail);
 
-			//update what time it is before sleeping. not sure how long sending messages will take.
-			//sleep until next minute time increment
 			sleepUntilNextTimeIncrement(cal);
 		}
 		
 		System.out.println(Thread.currentThread().getName() + " is shutting down.");
 	}
 
+	private void updateNoSendList(Mail mail) {		
+		List<String> contactsToAddToNoSendList = mail.updateNoSendList();
+		
+		WebApplicationContext servletContext =  WebApplicationContextUtils.getWebApplicationContext(context);
+		noSendListDAO = (NoSendListDAO) servletContext.getBean("noSendListDAO");
+		
+		for (String contact : contactsToAddToNoSendList) {
+			if (!noSendListDAO.isContactOnNoSendList(contact)) {
+				noSendListDAO.addToNoSendList(contact);
+			}
+		}
+	}
+
+	private String getMonthTable(String date) {
+		int month = Integer.parseInt(date.substring(5, 7));
+		return MonthTable.getMonthTableName(month);
+	}
+	
 	private void send(String monthTable, String dateTime, Mail mail) {
 		WebApplicationContext servletContext =  WebApplicationContextUtils.getWebApplicationContext(context);	
 		ReminderDAO reminderDao = (ReminderDAO) servletContext.getBean("reminderDAO");
 		
-		List<Reminder> messages = null;
-		do {
-			messages = reminderDao.getRemindersToSend(monthTable, dateTime);
-			System.out.println("num messages:" + messages.size());
+		List<Reminder> messages = reminderDao.getRemindersToSend(monthTable, dateTime);
+		//System.out.println("num messages:" + messages.size());
 
-			for(Reminder msgObj: messages) {					
-				String provider = msgObj.getProvider();
-				String email = providers.getEmailForProvider(provider);
-				String sendAddr = msgObj.getCellNumber() + email;
-				String msg = msgObj.getMessage();
-				
-				mail.send(msg, sendAddr);
-				reminderDao.setRemindersAsSent(msgObj);
-			}	
-		} while(messages.size() == reminderDao.getSendLimit());		
+		for(Reminder msgObj: messages) {					
+			String provider = msgObj.getProvider();
+			String email = providers.getEmailForProvider(provider);
+			String sendAddr = msgObj.getCellNumber() + email;
+			String msg = msgObj.getMessage();
+			
+			msg = msg + appendedMessage;
+			
+			if (noSendListDAO.isContactOnNoSendList(msgObj.getCellNumber())) {
+				System.out.println("Attempted to send message to a number on the 'no send list': " + msgObj.getCellNumber() + " msg:" + msg);
+			}
+			else {
+				System.out.println("Sending- " + " sendAddr: " + sendAddr + " msg: " + msg);
+				mail.send(msg, sendAddr);	
+			}
+			
+			reminderDao.setRemindersAsSent(msgObj);
+		}	
 	}
 	
 	private void sleepUntilNextTimeIncrement(Calendar cal) {
@@ -96,7 +114,7 @@ public class Sender implements Runnable
 			wait = timeIncrementInSeconds * 1000 - milliTime;
 		}
 		
-		System.out.println("SLEEPING. currTime = " + time + " sleepTime = " + (wait/1000) + " seconds");
+		//System.out.println("SLEEPING. currTime = " + time + " sleepTime = " + (wait/1000) + " seconds");
 		
 		try
 			{Thread.sleep(wait);} 

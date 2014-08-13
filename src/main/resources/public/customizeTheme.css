@@ -1,6 +1,5 @@
 .has-error {
-	box-shadow: 0px 0px 0pt 2pt red;
-	border-radius:4px; 
+	border: 1px solid #FF4136;
 }
 
 body {

@@ -23,11 +23,7 @@ public class ReminderDAO {
 	@Autowired
     private JdbcTemplate jdbcTemplate;	
 	
-	private final int SEND_LIMIT = 1000;
-	
-	public int getSendLimit() {
-		return SEND_LIMIT;
-	}	
+	private final int SEND_LIMIT = 10;
 	
 	public List<Reminder> getRemindersToSend(String monthTable, String scheduledDate) {
 		String getMessagesSql = "SELECT * FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + SEND_LIMIT;
@@ -43,13 +39,10 @@ public class ReminderDAO {
 		List<Reminder> reminders = jdbcTemplate.query(getMessagesSql, new Object[] { insertDate }, new RowMapper<Reminder>() {
 			public Reminder mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Reminder reminder = new Reminder();
-				reminder.setMessage(rs.getString("Message"));
-				
-				String contacts = rs.getString("contacts");
-				String provider = rs.getString("provider");
-				
-				reminder.setProvider(provider);
-				reminder.setCellNumber(contacts);
+				reminder.setFromUser(rs.getString("username"));
+				reminder.setMessage(rs.getString("message"));				
+				reminder.setProvider(rs.getString("provider"));
+				reminder.setCellNumber(rs.getString("contacts"));
 				reminder.setId(rs.getInt("reminderid"));
 				reminder.setDate(rs.getString("scheduleddate"));
 				
@@ -113,7 +106,7 @@ public class ReminderDAO {
 		String date = reminder.getDate();
 		String timezone = reminder.getTimezone();
 
-		time = Utils.convertToTimezone(date + " " + time, "US/Eastern", timezone);
+		time = Utils.convertToTimezone(date + " " + time, MyConstants.SERVER_TIMEZONE, timezone);
 
 		int timeDelim = time.indexOf(" ");
 		time = time.substring(timeDelim);
@@ -122,29 +115,40 @@ public class ReminderDAO {
 		return reminder;
 	}
 	
-	public void addReminder(Reminder reminder, String username) {
-		String date = reminder.getYear() + "-" + reminder.getMonth() + "-" + reminder.getDay();
+	public boolean doesReminderExist(Reminder reminder) {
+		String message = reminder.getMessage();
+		
+		String date = getReminderDate(reminder);
+		String timezone = reminder.getTimezone();
+		date = convertTZtoServerTZ(date, timezone);
+		Date insertDate = formatReminderDateToDBdate(date);
 
-		if (date != null) {
-			String formattedTime = formatTimePostgreSQL24hour(reminder.getTime());
-			date = date + " " + formattedTime;
-		}
+		String contact = reminder.getCellNumber();
+
+		int month = Integer.parseInt(reminder.getMonth());
+		String monthTable = MonthTable.getMonthTableName(month);
+		
+		String sql = "SELECT COUNT(1) FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE contacts = ? AND message = ? AND scheduleddate::date = ?";
+		
+		List<Integer> numReminders = jdbcTemplate.query(sql, new Object[] {contact, message, insertDate}, new RowMapper<Integer>() {
+			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getInt(1);
+			}
+		});
+		
+		return (numReminders.size() > 0) ? true : false;
+	}
+	
+	public void addReminder(Reminder reminder, String username) {
+		String date = getReminderDate(reminder);
 
 		String name = reminder.getName();
 		String message = reminder.getMessage();
 		String timezone = reminder.getTimezone();
 
-		if (!timezone.equals("US/Eastern")) {
-			date = Utils.convertToTimezone(date, timezone, "US/Eastern");
-		}
+		date = convertTZtoServerTZ(date, timezone);
 
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-		Date insertDate = null;
-		try {
-			insertDate = df.parse(date);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		Date insertDate = formatReminderDateToDBdate(date);
 
 		String contact = reminder.getCellNumber();
 		String provider = reminder.getProvider();
@@ -156,6 +160,25 @@ public class ReminderDAO {
 				+ " (USERNAME, SCHEDULEDDATE, NAME, MESSAGE, CONTACTS, PROVIDER, TIMEZONE, \"wasSent\") VALUES (?,?,?,?,?,?,?,?)";
 
 		jdbcTemplate.update(sql, new Object[] { username, insertDate, name, message, contact, provider, timezone, false });
+	}
+	
+	private String getReminderDate(Reminder reminder) {
+		String date = reminder.getYear() + "-" + reminder.getMonth() + "-" + reminder.getDay();
+
+		if (date != null) {
+			String formattedTime = formatTimePostgreSQL24hour(reminder.getTime());
+			date = date + " " + formattedTime;
+		}
+		
+		return date;
+	}
+	
+	private String convertTZtoServerTZ(String date, String timezone) {
+		if (!timezone.equals(MyConstants.SERVER_TIMEZONE)) {
+			date = Utils.convertToTimezone(date, timezone, MyConstants.SERVER_TIMEZONE);
+		}
+		
+		return date;
 	}
 	
 	private String formatTimePostgreSQL24hour(String time) {
@@ -177,6 +200,18 @@ public class ReminderDAO {
 		return time;
 	}
 	
+	private Date formatReminderDateToDBdate(String date) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+		Date insertDate = null;
+		try {
+			insertDate = df.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return insertDate;
+	}
+	
 	private String addLeadingZeroToTime(String time) {
 		if (time.length() < 10) time = "0" + time;
 		
@@ -184,32 +219,30 @@ public class ReminderDAO {
 	}
 
 	/*
-	 * limit number of reminders for a contact per day
+	 * limit number of reminders for a day
 	 */
-	public boolean isSendLimitReached(Reminder reminder, String username, int limit) {
+	public boolean isSendLimitReached(String username) {		
+		Calendar cal = Calendar.getInstance();
+		
 	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	    Date insertDate = null;
 	    try {
-	      insertDate = df.parse(reminder.getDate());
+	      insertDate = df.parse(cal.getTime().toString());
 	    } catch (ParseException e) {
 	      e.printStackTrace();
 	    }
 		
-		Calendar cal = Calendar.getInstance();
-	    cal.setTime(insertDate);
 	    int month = cal.get(Calendar.MONTH) + 1;
 		
 		String monthTable = MonthTable.getMonthTableName(month);
-		String sql = "SELECT COUNT(reminderid) FROM " + monthTable + " WHERE contacts like ? and username = ? and scheduleddate::date = ?";
-		
-	    String contact = reminder.getCellNumber();
+		String sql = "SELECT COUNT(reminderid) FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE username = ? and scheduleddate::date = ?";
 	
-		List<Integer> numReminders = jdbcTemplate.query(sql, new Object[] {"%" + contact + "%", username, insertDate}, new RowMapper<Integer>() {
+		List<Integer> numReminders = jdbcTemplate.query(sql, new Object[] {username, insertDate}, new RowMapper<Integer>() {
 			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
 				return rs.getInt(1);
 			}
 		});
 		
-		return (numReminders.size() > limit) ? true : false;
+		return (numReminders.size() > SEND_LIMIT) ? true : false;
 	}
 }

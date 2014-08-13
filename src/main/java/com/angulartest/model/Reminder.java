@@ -3,6 +3,7 @@ package com.angulartest.model;
 public class Reminder {
 	private int id;
 	
+	private String fromUser;
 	private String name;
 	private String message;
 	private String cellNumber;
@@ -115,5 +116,13 @@ public class Reminder {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getFromUser() {
+		return fromUser;
+	}
+
+	public void setFromUser(String fromUser) {
+		this.fromUser = fromUser;
 	}
 }

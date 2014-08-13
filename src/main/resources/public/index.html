@@ -8,8 +8,6 @@
 
 <title>Hello AngularJS</title>
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.17.2/build/cssreset/cssreset-min.css">
-<!-- <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/darkly/bootstrap.min.css"> -->
-<!-- http://bootswatch.com/darkly/ -->
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/lumen/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="customizeTheme.css">
 
@@ -88,12 +86,14 @@
 						</fieldset>
 					</form>
 
-					<div ng-show="reminderAdded" class="alert alert-dismissable alert-success" style="margin-top: 10px; width: 80%;">
+					<div ng-show="" class="alert alert-dismissable alert-info" style="margin-top: 10px; width: 50%;">
+						<strong>Sending...</strong>
+					</div>
+					<div ng-show="reminderAdded" class="alert alert-dismissable alert-success" style="margin-top: 10px; width: 50%;">
 						<strong>Reminder successfully created!</strong>
 					</div>
 
-					<div ng-show="addReminderForm.$invalid && addReminderForm.showErrors" class="alert alert-dismissable alert-danger"
-						style="margin-top: 10px; width: 80%;">
+					<div ng-show="addReminderForm.$invalid && addReminderForm.showErrors" class="alert alert-dismissable alert-danger" style="margin-top: 10px; width: 50%;">
 						<strong>Please refer to the examples for correctly creating a reminder.</strong>
 					</div>
 				</div>

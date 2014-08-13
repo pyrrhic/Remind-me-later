@@ -21,8 +21,7 @@ public class NoSendListDAO {
 					 "(contact) " +
 				     "VALUES(?)";
 		
-		jdbcTemplate.update(sql, new Object[] { 
-			      contact });
+		jdbcTemplate.update(sql, new Object[] { contact });
 	}
 		
 	public boolean isContactOnNoSendList(String contact) {

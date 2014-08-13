@@ -30,10 +30,12 @@ myAppModule.controller('Home', function($scope, $http, $timeout) {
 			$timeout(function() {
 				$scope.addReminderForm.showErrors = false;
 				},
-				5000);
+				4000);
 			
 			return;
 		}
+		
+		$scope.addReminderForm.showSendingMsg = true;
 		
 		$scope.reminder.timezone = jstz.determine().name();
 		
@@ -50,11 +52,9 @@ myAppModule.controller('Home', function($scope, $http, $timeout) {
 				//show a message that notifies the user of the successful reminder creation
 				$scope.reminderAdded = true;
 				
-				
 				//remove the message that notifies the user of successful reminder creation after x seconds
 				$timeout(function() {
 							$scope.reminderAdded = false;
-							$scope.reminder = {};
 						},
 						2000);
 			}

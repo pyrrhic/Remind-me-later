@@ -15,26 +15,21 @@ import com.angulartest.dao.Providers;
 import com.angulartest.dao.ReminderDAO;
 import com.angulartest.model.Reminder;
 import com.angulartest.model.ReminderFO;
+import com.angulartest.service.ReminderService;
 import com.angulartest.validator.ReminderFOValidator;
 
 @RestController
 public class Home {
-	private ReminderDAO reminderDAO;
+	private ReminderService addReminderService;
 	
 	@Autowired
-	public Home(ReminderDAO reminderDAO) {
-		this.reminderDAO = reminderDAO;
+	public Home(ReminderService addReminderService) {
+		this.addReminderService = addReminderService;
 	}
 	
 	@RequestMapping(value="/addReminder", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public List<FieldError> addReminder(@RequestBody ReminderFO reminderFO, BindingResult result) {
-		ReminderFOValidator reminderFOValidator = new ReminderFOValidator();
-		reminderFOValidator.validate(reminderFO, result);
-		
-		if (!result.hasErrors()) {
-			Reminder reminder = reminderFO.convertReminderFOToReminder();
-			reminderDAO.addReminder(reminder, "anonymous@anonymous.com");
-		}
+		addReminderService.addReminder(reminderFO, result);
 		
 		return result.getFieldErrors();
 	}
