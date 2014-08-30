@@ -6,12 +6,12 @@ import javax.servlet.ServletContextListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import com.angulartest.dao.Providers;
+import com.angulartest.service.ProvidersService;
 
 @Configuration
 public class SenderInit implements ServletContextListener {	
 	@Autowired
-	private Providers provider;
+	private ProvidersService provider;
 	
 	private Thread thread;
 	

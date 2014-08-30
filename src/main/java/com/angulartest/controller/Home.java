@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.angulartest.dao.Providers;
 import com.angulartest.dao.ReminderDAO;
 import com.angulartest.model.Reminder;
 import com.angulartest.model.ReminderFO;
+import com.angulartest.service.ProvidersService;
 import com.angulartest.service.ReminderService;
 import com.angulartest.validator.ReminderFOValidator;
 
@@ -36,6 +36,6 @@ public class Home {
 	
 	@RequestMapping(value="/getProviders", method=RequestMethod.GET)
 	public String[] addReminder() {
-		return Providers.getInstance().getProviders();
+		return ProvidersService.getInstance().getProviders();
 	}
 }

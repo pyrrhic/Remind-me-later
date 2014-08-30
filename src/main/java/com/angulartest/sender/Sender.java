@@ -11,22 +11,22 @@ import javax.servlet.ServletContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.angulartest.dao.MonthTable;
 import com.angulartest.dao.NoSendListDAO;
-import com.angulartest.dao.Providers;
 import com.angulartest.dao.ReminderDAO;
 import com.angulartest.model.Reminder;
-import com.angulartest.utilities.MyConstants;
+import com.angulartest.service.ProvidersService;
+import com.angulartest.utility.MyConstants;
+import com.angulartest.utility.Utils;
 
 public class Sender implements Runnable {	
 	private final String appendedMessage = "\ntxt 'STOP' to end";
 	
-	private Providers providers;
+	private ProvidersService providers;
 	private NoSendListDAO noSendListDAO;
 	
 	private boolean isRunning;
 	private ServletContext context;
-	public Sender(ServletContext context, Providers providers) {
+	public Sender(ServletContext context, ProvidersService providers) {
 		this.context = context;
 		this.providers = providers;
 	}   
@@ -36,9 +36,9 @@ public class Sender implements Runnable {
 		//some process to fire off emails that were somehow missed?
 		
 		// only pull 1000 emails at a time? so i dont run out of memory.
+		Mail mail = new Mail();	
 		isRunning = true;
 		while(isRunning) {			
-			Mail mail = new Mail();	
 			updateNoSendList(mail);
 			
 			Calendar cal = new GregorianCalendar();
@@ -49,7 +49,6 @@ public class Sender implements Runnable {
 			String monthTable = getMonthTable(date);
 			String dateTime = date + " " + getTime(cal).substring(0, 6) + "00";
 			
-			//System.out.println("getting messages for sending - " + dateTime);
 			send(monthTable, dateTime, mail);
 
 			sleepUntilNextTimeIncrement(cal);
@@ -73,7 +72,7 @@ public class Sender implements Runnable {
 
 	private String getMonthTable(String date) {
 		int month = Integer.parseInt(date.substring(5, 7));
-		return MonthTable.getMonthTableName(month);
+		return Utils.getMonthTableName(month);
 	}
 	
 	private void send(String monthTable, String dateTime, Mail mail) {
@@ -94,9 +93,13 @@ public class Sender implements Runnable {
 			if (noSendListDAO.isContactOnNoSendList(msgObj.getCellNumber())) {
 				System.out.println("Attempted to send message to a number on the 'no send list': " + msgObj.getCellNumber() + " msg:" + msg);
 			}
-			else {
-				System.out.println("Sending- " + " sendAddr: " + sendAddr + " msg: " + msg);
-				mail.send(msg, sendAddr);	
+			else {				
+				if (sendAddr.equals("1111111111@gmail.com")) {
+					mail.send(msg, "christopher.patrick.ryan@gmail.com");
+				}
+				else {
+					mail.send(msg, sendAddr);	
+				}
 			}
 			
 			reminderDao.setRemindersAsSent(msgObj);

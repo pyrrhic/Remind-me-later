@@ -1,4 +1,4 @@
-package com.angulartest.utilities;
+package com.angulartest.utility;
 
 import java.util.ArrayList;
 import java.util.List;

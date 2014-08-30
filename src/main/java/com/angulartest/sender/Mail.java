@@ -25,9 +25,6 @@ public class Mail {
 	private static String EMAIL = System.getenv("EMAIL");
 	private static String EMAIL_PASSWORD = System.getenv("EMAIL_PASSWORD");
 	
-	public Mail() {
-	}
-	
 	public List<String> updateNoSendList() {
 		List<String> addToNoSendList = null;
 		Store store = null;

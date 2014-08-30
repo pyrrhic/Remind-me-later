@@ -14,8 +14,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.angulartest.model.Reminder;
-import com.angulartest.utilities.MyConstants;
-import com.angulartest.utilities.Utils;
+import com.angulartest.utility.MyConstants;
+import com.angulartest.utility.Utils;
 
 @Repository
 public class ReminderDAO {
@@ -56,7 +56,7 @@ public class ReminderDAO {
 		String date = r.getDate();
 		String monthString = date.substring(5, 7);
 		int month = Integer.parseInt(monthString);
-		String monthTable = MonthTable.getMonthTableName(month);
+		String monthTable = Utils.getMonthTableName(month);
 		
 		String sql = "UPDATE " +  MyConstants.SCHEMA_NAME + "." + monthTable + " SET \"wasSent\"=? WHERE " + " reminderid=?";
 		
@@ -126,9 +126,9 @@ public class ReminderDAO {
 		String contact = reminder.getCellNumber();
 
 		int month = Integer.parseInt(reminder.getMonth());
-		String monthTable = MonthTable.getMonthTableName(month);
+		String monthTable = Utils.getMonthTableName(month);
 		
-		String sql = "SELECT COUNT(1) FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE contacts = ? AND message = ? AND scheduleddate::date = ?";
+		String sql = "SELECT COUNT(contacts) FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE contacts = ? AND message = ? AND scheduleddate = ?";
 		
 		List<Integer> numReminders = jdbcTemplate.query(sql, new Object[] {contact, message, insertDate}, new RowMapper<Integer>() {
 			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -136,7 +136,7 @@ public class ReminderDAO {
 			}
 		});
 		
-		return (numReminders.size() > 0) ? true : false;
+		return (numReminders.get(0) > 0) ? true : false;
 	}
 	
 	public void addReminder(Reminder reminder, String username) {
@@ -154,7 +154,7 @@ public class ReminderDAO {
 		String provider = reminder.getProvider();
 
 		int month = Integer.parseInt(reminder.getMonth());
-		String monthTable = MonthTable.getMonthTableName(month);
+		String monthTable = Utils.getMonthTableName(month);
 
 		String sql = "INSERT INTO " +  MyConstants.SCHEMA_NAME + "." + monthTable
 				+ " (USERNAME, SCHEDULEDDATE, NAME, MESSAGE, CONTACTS, PROVIDER, TIMEZONE, \"wasSent\") VALUES (?,?,?,?,?,?,?,?)";
@@ -234,7 +234,7 @@ public class ReminderDAO {
 		
 	    int month = cal.get(Calendar.MONTH) + 1;
 		
-		String monthTable = MonthTable.getMonthTableName(month);
+		String monthTable = Utils.getMonthTableName(month);
 		String sql = "SELECT COUNT(reminderid) FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE username = ? and scheduleddate::date = ?";
 	
 		List<Integer> numReminders = jdbcTemplate.query(sql, new Object[] {username, insertDate}, new RowMapper<Integer>() {

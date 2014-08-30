@@ -1,4 +1,4 @@
-package com.angulartest.utilities;
+package com.angulartest.utility;
 
 public class MyConstants {
 	public static final String SERVER_TIMEZONE = "America/New_York";

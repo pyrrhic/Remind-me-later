@@ -8,6 +8,9 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.angulartest.utility.MyConstants;
+import com.angulartest.utility.ReminderDateFormatter;
+
 public class ReminderDateFormatterTest {
 	ReminderDateFormatter dateFormatter = new ReminderDateFormatter();
 	

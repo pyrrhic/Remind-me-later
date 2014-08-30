@@ -1,4 +1,4 @@
-package com.angulartest.utilities;
+package com.angulartest.utility;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

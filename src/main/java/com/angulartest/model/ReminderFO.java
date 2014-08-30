@@ -1,7 +1,7 @@
 package com.angulartest.model;
 
-import com.angulartest.utilities.ReminderDateFormatter;
-import com.angulartest.utilities.ReminderTimeFormatter;
+import com.angulartest.utility.ReminderDateFormatter;
+import com.angulartest.utility.ReminderTimeFormatter;
 
 public class ReminderFO {
 	private String mobileNumber;

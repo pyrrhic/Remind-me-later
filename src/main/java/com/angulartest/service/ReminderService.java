@@ -30,7 +30,7 @@ public class ReminderService {
 				reminderDAO.addReminder(reminder, "anonymous@anonymous.com");	
 			}
 			else {
-				System.out.println("A user tried to add the same reminder multiple times. Contact: " + reminder.getCellNumber() + " Msg:" + reminder.getMessage());
+				System.out.println(this.getClass().getSimpleName() + ": A user tried to add the same reminder multiple times. Contact: " + reminder.getCellNumber() + " Msg:" + reminder.getMessage() + " DateTime:" + reminder.getDate() + " " + reminder.getTime());
 			}
 		}
 	}

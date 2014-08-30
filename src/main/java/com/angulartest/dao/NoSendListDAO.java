@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.angulartest.utilities.MyConstants;
+import com.angulartest.utility.MyConstants;
 
 @Repository
 public class NoSendListDAO {

@@ -5,10 +5,10 @@ import org.joda.time.DateTimeZone;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.angulartest.dao.Providers;
 import com.angulartest.model.ReminderFO;
-import com.angulartest.utilities.ReminderDateFormatter;
-import com.angulartest.utilities.ReminderTimeFormatter;
+import com.angulartest.service.ProvidersService;
+import com.angulartest.utility.ReminderDateFormatter;
+import com.angulartest.utility.ReminderTimeFormatter;
 
 public class ReminderFOValidator implements Validator {	
 	private final int MAX_MESSAGE_LENGTH = 140;
@@ -80,7 +80,7 @@ public class ReminderFOValidator implements Validator {
 		boolean isValid = !isBlankOrEmpty(provider);
 		
 		if (isValid) {
-			isValid = (!Providers.getInstance().getEmailForProvider(provider).equals("")) ? true : false;
+			isValid = (!ProvidersService.getInstance().getEmailForProvider(provider).equals("")) ? true : false;
 		}
 		
 		return isValid;
