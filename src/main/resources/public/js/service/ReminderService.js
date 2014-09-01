@@ -15,7 +15,7 @@ myAppModule.service('ReminderService', function() {
 			return;
 		}
 		
-		$scope.addReminderForm.showSendingMsg = true;
+		$scope.showSendingMsg = true;
 		
 		$scope.reminder.timezone = jstz.determine().name();
 		
@@ -27,16 +27,18 @@ myAppModule.service('ReminderService', function() {
 				'Content-Type': 'application/json'
 			}
 		})
-		.success(function(errors) {		
+		.success(function(errors) {
+			$scope.showSendingMsg = false;
+			
 			if (errors.length === 0) {
 				//show a message that notifies the user of the successful reminder creation
 				$scope.reminderAdded = true;
 				
 				//remove the message that notifies the user of successful reminder creation after x seconds
 				$timeout(function() {
-							$scope.reminderAdded = false;
-						},
-						2000);
+					$scope.reminderAdded = false;
+					},
+					2000);
 			}
 			else {
 				//user is doing something really weird if he got past the ui side validation. not sure if i should do anything or just let them wonder. or they're reading this and not wondering at all.

@@ -2,6 +2,7 @@ package com.angulartest.validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -10,6 +11,7 @@ import com.angulartest.service.ProvidersService;
 import com.angulartest.utility.ReminderDateFormatter;
 import com.angulartest.utility.ReminderTimeFormatter;
 
+@Component
 public class ReminderFOValidator implements Validator {	
 	private final int MAX_MESSAGE_LENGTH = 140;
 	private final String GENERIC_ERROR_MESSAGE = "Please refer to the example for the correct usage of this field.";

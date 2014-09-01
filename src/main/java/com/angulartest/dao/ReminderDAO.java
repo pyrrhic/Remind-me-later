@@ -20,10 +20,13 @@ import com.angulartest.utility.Utils;
 @Repository
 public class ReminderDAO {
 
-	@Autowired
-    private JdbcTemplate jdbcTemplate;	
-	
+    private JdbcTemplate jdbcTemplate;		
 	private final int SEND_LIMIT = 10;
+	
+	@Autowired
+	public ReminderDAO(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 	
 	public List<Reminder> getRemindersToSend(String monthTable, String scheduledDate) {
 		String getMessagesSql = "SELECT * FROM " + MyConstants.SCHEMA_NAME + "." + monthTable + " WHERE ScheduledDate <= ? AND \"wasSent\" = false LIMIT " + SEND_LIMIT;

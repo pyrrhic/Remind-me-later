@@ -1,5 +1,5 @@
 
-myAppModule.controller('HomeController', function($scope, $http, $timeout, RegexService, ReminderService) {	
+myAppModule.controller('HomeController', function($scope, $http, $timeout, RegexService, ReminderService, RegistrationService) {	
 	var initPage = function() {		
 		$http.get(myAppModule.baseUrl+"getProviders")
 		.success(function(data) {
@@ -16,7 +16,7 @@ myAppModule.controller('HomeController', function($scope, $http, $timeout, Regex
 	}
 	
 	$scope.register = function() {
-		
+		RegistrationService.register($scope, $http, $timeout);
 	}
 })
 
